@@ -16,6 +16,9 @@ function BottombarButton({ icon, onClick }: BottombarButtonProps) {
       icon={icon}
       borderRadius="2em"
       onClick={onClick}
+      _hover={{
+        cursor: "pointer",
+      }}
     />
   );
 }
