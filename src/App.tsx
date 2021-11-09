@@ -4,7 +4,7 @@ import SidebarContainer from "./common/sidebar/containers/SidebarContainer";
 
 function App() {
   return (
-    <Flex bg="gray" flexDirection="row" height="100vh">
+    <Flex flexDirection="row" height="100vh">
       <SidebarContainer />
       <Container />
     </Flex>

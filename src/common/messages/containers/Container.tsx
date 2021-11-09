@@ -4,7 +4,7 @@ import MessagesContainer from "./MessagesContainer";
 
 function Container() {
   return (
-    <Flex bg="blue" flexDirection="column" height="100%" width="100%">
+    <Flex flexDirection="column" height="100%" width="100%">
       <MessagesContainer />
       <BottombarContainer />
     </Flex>
