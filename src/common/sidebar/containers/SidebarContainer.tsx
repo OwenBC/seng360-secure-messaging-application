@@ -1,11 +1,12 @@
 import { VStack } from "@chakra-ui/layout";
-import { useState } from "react";
+import { useContext } from "react";
+import Context, { ContextType } from "../../../lib/Context";
 import Colors from "../../../shared/Colors";
 import Line from "../../../shared/Line";
 import UsernameButton from "../components/UsernameButton";
 
 function SidebarContainer() {
-  const [users, setUsers] = useState(["user1", "user2"]);
+  const { users } = useContext(Context) as ContextType;
 
   return (
     <VStack
@@ -15,7 +16,7 @@ function SidebarContainer() {
       width="25%"
       padding="1em"
     >
-      {users.map((user) => {
+      {users.list.map((user) => {
         return (
           <>
             <UsernameButton name={user} onClick={() => {}} />
