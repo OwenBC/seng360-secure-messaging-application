@@ -2,7 +2,6 @@ import { VStack } from "@chakra-ui/layout";
 import { useContext } from "react";
 import Context, { ContextType } from "../../../lib/Context";
 import Colors from "../../../shared/Colors";
-import Line from "../../../shared/Line";
 import UsernameButton from "../components/UsernameButton";
 
 function SidebarContainer() {
@@ -17,12 +16,7 @@ function SidebarContainer() {
       padding="1em"
     >
       {users.list.map((user) => {
-        return (
-          <>
-            <UsernameButton name={user} onClick={() => {}} />
-            <Line />
-          </>
-        );
+        return <UsernameButton key={user} name={user} onClick={() => {}} />;
       })}
       <UsernameButton name="Start new chat" onClick={() => {}} />
     </VStack>
