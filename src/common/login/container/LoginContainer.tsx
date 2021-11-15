@@ -8,10 +8,15 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/layout";
-import LoginButton from "../components/LoginButton";
-import RegisterButton from "../components/RegisterButton";
+import { Button } from "@chakra-ui/react";
+import { useContext, useState } from "react";
+import Context, { ContextType } from "../../../lib/Context";
 
 function LoginContainer() {
+  const { socket, serverKeys } = useContext(Context) as ContextType;
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <Center flexGrow={1}>
       <VStack height="40%" width="40%" borderStyle="solid" borderWidth="1px">
@@ -19,20 +24,39 @@ function LoginContainer() {
           <Heading>Login</Heading>
           <HStack>
             <Text>Username: </Text>
-            <Input />
+            <Input
+              onChange={(event) => {
+                setUsername(event.target.value);
+              }}
+            />
           </HStack>
           <Box>
             <HStack>
               <Text>Password: </Text>
-              <Input />
+              <Input
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                }}
+              />
             </HStack>
           </Box>
         </Center>
         <HStack flexGrow={1} w="100%" justifyContent="space-between">
           <Spacer />
-          <RegisterButton />
+          <Button onClick={() => {}}>Register</Button>
           <Spacer />
-          <LoginButton />
+          <Button
+            onClick={() => {
+              if (serverKeys.publicKey === undefined) return;
+              socket.sendMessage(
+                serverKeys.publicKey?.encrypt(
+                  `[login]:[${username}]:[${password}]`
+                )
+              );
+            }}
+          >
+            Login
+          </Button>
           <Spacer />
         </HStack>
       </VStack>

@@ -16,7 +16,7 @@ function App() {
   );
 
   const [nonce, setNonce] = useState<number>(Math.floor(Math.random() * 4096));
-  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isNonceValidated, setIsNonceValidated] = useState(false);
 
   const [clientKey, setClientKey] = useState<NodeRSA>(new NodeRSA({ b: 1024 }));
 
@@ -100,9 +100,23 @@ function App() {
         try {
           if (parseInt(nonceBack) === nonce + 1) {
             setNonce(nonce + 1);
-            setIsAuthorized(true);
+            setIsNonceValidated(true);
           }
         } catch (error) {}
+      } else if (newMessageHistory.length === 3) {
+        const key = new NodeRSA();
+        key.setOptions({
+          encryptionScheme: "pkcs1",
+        });
+        key.importKey(lastMessage.data, "pkcs1-public-pem");
+
+        setServerPublicKey(key);
+      } else {
+        const message = clientKey.decrypt(
+          Buffer.from(lastMessage.data),
+          "utf8"
+        );
+        if (message === "[authorized]:[public key]") setIsAuthenticated(true);
       }
 
       console.log(newMessageHistory);
@@ -112,27 +126,37 @@ function App() {
     lastMessage?.data,
     clientKey,
     messageHistory,
+    nonce,
+    sendMessage,
     setServerPublicKey,
     setMessageHistory,
   ]);
 
+  var displayedContent;
+
+  if (!isNonceValidated) {
+    displayedContent = (
+      <Center flexGrow={1}>
+        <CircularProgress isIndeterminate />
+      </Center>
+    );
+  } else {
+    if (isAuthenticated) {
+      displayedContent = (
+        <>
+          <SidebarContainer />
+          <Container />
+        </>
+      );
+    } else {
+      displayedContent = <LoginContainer />;
+    }
+  }
+
   return (
     <Context.Provider value={store}>
       <Flex flexDirection="row" height="100vh">
-        {isAuthorized ? (
-          isAuthenticated ? (
-            <>
-              <SidebarContainer />
-              <Container />
-            </>
-          ) : (
-            <LoginContainer />
-          )
-        ) : (
-          <Center flexGrow={1}>
-            <CircularProgress isIndeterminate />
-          </Center>
-        )}
+        {displayedContent}
       </Flex>
     </Context.Provider>
   );
