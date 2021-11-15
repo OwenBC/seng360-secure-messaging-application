@@ -1,31 +1,23 @@
-import { Flex } from "@chakra-ui/layout";
+import { Container, Flex } from "@chakra-ui/layout";
+import { useContext, useEffect, useState } from "react";
+import Context, { ContextType } from "../../../lib/Context";
 import Message from "../components/Message";
 import MessageHeaderContainer from "./MessageHeaderContainer";
 
 function MessagesContainer() {
-  const messages = [ 
-    {
-      name: "user1",
-      time: "8:10 AM",
-      text: "Hey, is this working?",
-      image: null,
-    },
-    {
-      name: "user0",
-      time: "8:11 AM",
-      text: "I think it is",
-      image: null,
-    },
-  ];
+  const { messages } = useContext(Context) as ContextType;
+  const [messageLog, setMessageLog] = useState<MessageEvent<any>[]>([]);
+
+  useEffect(() => {
+    setMessageLog(messages.history);
+  }, [messages.history]);
 
   return (
     <>
       <MessageHeaderContainer />
-      <Flex flexDirection="column" height="100%" width="100%">
-        {messages.map((message) => {
-          return (
-            <Message name={message.name} time={message.time} text={message.text} image={message.image} onClick={() => {}} />
-          );
+      <Flex flexDirection="column" overflow="scroll" height="100%" width="100%">
+        {messageLog.map((message, index) => {
+          return <Container key={index}>{message.data}</Container>;
         })}
       </Flex>
     </>

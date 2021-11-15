@@ -8,26 +8,26 @@ interface MessageHeaderProps {
 }
 
 function MessageHeader({name}: MessageHeaderProps) {
-    return (
-        <Flex 
-            flexDirection="row"
-            alignItems="center"
-            width="100%"
-            maxH="20%"
-            minH="10%"
-        >
-            <Heading
-                isTruncated
-                textAlign="center"
-                padding="1em"
-                margin="0em"
-            >
-            {name}
-            </Heading>
-            <Spacer />
-            <SettingsMenu />
-        </Flex>
-    )
+	return (
+		<Flex 
+			flexDirection="row"
+			alignItems="center"
+			width="100%"
+			maxH="20%"
+			minH="10%"
+		>
+			<Heading
+				isTruncated
+				textAlign="center"
+				padding="1em"
+				margin="0em"
+			>
+			{name}
+			</Heading>
+			<Spacer />
+			<SettingsMenu />
+		</Flex>
+	)
 }
 
 export default MessageHeader;
