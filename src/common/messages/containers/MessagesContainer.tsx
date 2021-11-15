@@ -5,19 +5,30 @@ import Message from "../components/Message";
 import MessageHeaderContainer from "./MessageHeaderContainer";
 
 function MessagesContainer() {
-  const { messages } = useContext(Context) as ContextType;
-  const [messageLog, setMessageLog] = useState<MessageEvent<any>[]>([]);
+  const { messages, clientKey } = useContext(Context) as ContextType;
+  const [messageLog, setMessageLog] = useState<string[]>([]);
 
   useEffect(() => {
-    setMessageLog(messages.history);
-  }, [messages.history]);
+    const newMessageLog: string[] = [];
+
+    if (messages.history.length > 4) {
+      for (let index = 4; index < messages.history.length; index++) {
+        const decryptedMessage = clientKey.key.decrypt(
+          Buffer.from(messages.history[index].data),
+          "utf8"
+        );
+        newMessageLog.push(decryptedMessage);
+      }
+    }
+    setMessageLog(newMessageLog);
+  }, [messages.history, clientKey.key]);
 
   return (
     <>
       <MessageHeaderContainer />
       <Flex flexDirection="column" overflow="scroll" height="100%" width="100%">
         {messageLog.map((message, index) => {
-          return <Container key={index}>{message.data}</Container>;
+          return <Container key={index}>{message}</Container>;
         })}
       </Flex>
     </>
