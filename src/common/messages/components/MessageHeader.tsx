@@ -1,32 +1,35 @@
 import { Flex, Spacer } from "@chakra-ui/layout";
 import { Heading } from "@chakra-ui/react";
-import React from "react";
 import SettingsMenu from "./SettingsMenu";
+import Line from "../../../shared/Line";
 
 interface MessageHeaderProps {
-  name: string;
+	activeChat: string;
 }
 
-function MessageHeader({name}: MessageHeaderProps) {
+function MessageHeader({activeChat}: MessageHeaderProps) {
 	return (
-		<Flex 
-			flexDirection="row"
-			alignItems="center"
-			width="100%"
-			maxH="20%"
-			minH="10%"
-		>
-			<Heading
-				isTruncated
-				textAlign="center"
-				padding="1em"
-				margin="0em"
+		<>
+			<Flex 
+				flexDirection="row"
+				alignItems="center"
+				width="100%"
+				maxH="20%"
+				minH="10%"
 			>
-			{name}
-			</Heading>
-			<Spacer />
-			<SettingsMenu />
-		</Flex>
+				<Heading
+					isTruncated
+					textAlign="center"
+					padding="1em"
+					margin="0em"
+				>
+				{activeChat}
+				</Heading>
+				<Spacer />
+				<SettingsMenu />
+			</Flex>
+			<Line />
+		</>
 	)
 }
 
