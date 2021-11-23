@@ -1,10 +1,14 @@
-import { Container, Flex } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/layout";
 import { useContext, useEffect, useState } from "react";
 import Context, { ContextType } from "../../../lib/Context";
 import Message from "../components/Message";
-import MessageHeaderContainer from "./MessageHeaderContainer";
+import MessageHeader from "../components/MessageHeader";
 
-function MessagesContainer() {
+interface MessagesContainerProps {
+	activeChat: string;
+}
+
+function MessagesContainer( {activeChat} : MessagesContainerProps ) {
   const { messages, clientKey } = useContext(Context) as ContextType;
   const [messageLog, setMessageLog] = useState<string[]>([]);
 
@@ -25,10 +29,10 @@ function MessagesContainer() {
 
   return (
     <>
-      <MessageHeaderContainer />
+      <MessageHeader activeChat={activeChat} />
       <Flex flexDirection="column" overflow="scroll" height="100%" width="100%">
         {messageLog.map((message, index) => {
-          return <Container key={index}>{message}</Container>;
+          return <Message key={index} activeChat={activeChat} message={message} image={null}></Message>;
         })}
       </Flex>
     </>
