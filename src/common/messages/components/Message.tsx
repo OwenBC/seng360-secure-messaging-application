@@ -1,44 +1,36 @@
 import { Box, Flex, Text } from '@chakra-ui/layout';
 import { Heading } from '@chakra-ui/react';
-import React from 'react'
-
-const user = "user0";
+import MessageContextButton from './MessageContextButton';
 
 interface MessageProps {
-	name: string;
-	time: string;
-	text: string;
+	message: string;
+	activeChat: string;
 	image: File | null;
-	onClick: () => void;
 }
 
-function Message({ name, time, text, image, onClick }: MessageProps) {
+function Message({ message, activeChat, image}: MessageProps) {
+	const regex = /^\[(.*)\]:\[([A-Za-z0-9]*)_([A-Za-z0-9]*)\]:\[(.*)\]:\[(.*)\]:\[(.*)\]/;
+	const found = message.match(regex);
+	if (!found || found[1] !== "history" || (found[2] !== activeChat && found[3] !== activeChat)) return <></>;
+	const from = found[2];
+	const id = found[4];
+	const text = found[5];
+	const time = found[6];
+
 	return (
 		<Flex 
-			flexDirection={name ===  user ? "row-reverse":"row"} 
+			flexDirection={from === activeChat ? "row":"row-reverse"} 
 			padding="1em"
 		>
 			<Box maxW="sm" border="1px" paddingX="1em" borderColor="black" borderStyle="solid" borderRadius="15px" overflow="hidden">
 				<Heading fontSize="small">
-					{name + ' - ' + time}
+					{from + ' - ' + time}
 				</Heading> 
 				<Text>
 					{text}
 				</Text>
 			</Box>
-			<Heading
-				onClick={onClick}
-				textAlign="center"
-				_hover={{
-				  color: "gray",
-				  textDecoration: "underline",
-				  cursor: "pointer",
-				}}
-				padding="1em"
-				margin="0em"
-			>
-				...
-			</Heading>
+			{from === activeChat ? <></>:<MessageContextButton id={id} />}
 		</Flex>
 	);
 }
