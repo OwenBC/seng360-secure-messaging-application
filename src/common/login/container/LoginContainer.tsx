@@ -40,7 +40,9 @@ function LoginContainer() {
     <Center flexGrow={1}>
       <VStack height="40%" width="40%" borderStyle="solid" borderWidth="1px">
         <Center flexGrow={1} flexDirection="column">
-          <Heading>Login</Heading>
+          <Heading size="lg" p="0.5em">
+            Login
+          </Heading>
           <HStack>
             <Text>Username: </Text>
             <Input

@@ -11,6 +11,7 @@ function UsernameButton({ name, onClick }: UsernameButtonProps) {
   return (
     <>
       <Heading
+        size="lg"
         isTruncated
         onClick={onClick}
         textAlign="center"

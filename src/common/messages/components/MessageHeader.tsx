@@ -4,33 +4,34 @@ import SettingsMenu from "./SettingsMenu";
 import Line from "../../../shared/Line";
 
 interface MessageHeaderProps {
-	activeChat: string;
+  activeChat: string;
 }
 
-function MessageHeader({activeChat}: MessageHeaderProps) {
-	return (
-		<>
-			<Flex 
-				flexDirection="row"
-				alignItems="center"
-				width="100%"
-				maxH="20%"
-				minH="10%"
-			>
-				<Heading
-					isTruncated
-					textAlign="center"
-					padding="1em"
-					margin="0em"
-				>
-				{activeChat}
-				</Heading>
-				<Spacer />
-				<SettingsMenu />
-			</Flex>
-			<Line />
-		</>
-	)
+function MessageHeader({ activeChat }: MessageHeaderProps) {
+  return (
+    <>
+      <Flex
+        flexDirection="row"
+        alignItems="center"
+        width="100%"
+        maxH="20%"
+        minH="10%"
+      >
+        <Heading
+          size="lg"
+          isTruncated
+          textAlign="center"
+          padding="1em"
+          margin="0em"
+        >
+          {activeChat}
+        </Heading>
+        <Spacer />
+        <SettingsMenu />
+      </Flex>
+      <Line />
+    </>
+  );
 }
 
 export default MessageHeader;
