@@ -17,35 +17,12 @@ function SettingsMenu() {
 					cursor: "pointer",
 				}}
 			/>
-			<MenuList
-				padding="10"
-				background="white"
-				border="1px"
-				borderColor="black"
-				borderStyle="solid"
-			>
-				<MenuItem
-					background="white"
-					border="0px"
-					_hover={{
-						color: "gray",
-						textDecoration: "underline",
-						cursor: "pointer",
-					}}
-				>
+			<MenuList>
+				<MenuItem>
 					Sign out
 				</MenuItem>
 				<MenuDivider />
-				<MenuItem
-					background="white"
-					color="red"
-					border="0px" 
-					_hover={{
-						color: "red",
-						textDecoration: "underline",
-						cursor: "pointer",
-					}}
-				>
+				<MenuItem color="red">
 					Delete Account
 				</MenuItem>
 			</MenuList>

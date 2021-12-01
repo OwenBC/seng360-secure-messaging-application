@@ -1,5 +1,6 @@
 import { Center, Flex } from "@chakra-ui/layout";
 import { CircularProgress } from "@chakra-ui/progress";
+import { useColorMode } from "@chakra-ui/react";
 import NodeRSA from "node-rsa";
 import { useEffect, useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
@@ -131,6 +132,9 @@ function App() {
     setServerPublicKey,
     setMessageHistory,
   ]);
+  
+  const { setColorMode } = useColorMode();
+  setColorMode("light");
 
   var displayedContent;
 

@@ -13,31 +13,18 @@ function MessageContextButton( {id}: MessageContextButtonProps ) {
 		<Menu>
             <MenuButton
                 as={Heading}
-                textAlign="center"
                 _hover={{
-                color: "gray",
-                textDecoration: "underline",
-                cursor: "pointer",
+                    color: "gray",
+                    cursor: "pointer",
                 }}
-                padding="1em"
-                margin="0em"
-                height="0px"
-                verticalAlign="top"
+                paddingRight="2"
+                size="lg"
             >
                 ...
             </MenuButton>
-            <MenuList
-                padding="10"
-            >
+            <MenuList>
                 <MenuItem
-                    background="white"
                     color="red"
-                    border="0px" 
-                    _hover={{
-                        color: "red",
-                        textDecoration: "underline",
-                        cursor: "pointer",
-                    }}
                     onClick={() => {
                         if (serverKeys.publicKey === undefined) return;
                         socket.sendMessage(
