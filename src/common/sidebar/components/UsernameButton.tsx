@@ -4,7 +4,7 @@ import Line from "../../../shared/Line";
 
 interface UsernameButtonProps {
   name: string;
-  onClick: () => void;
+  onClick: (username: string) => void;
 }
 
 function UsernameButton({ name, onClick }: UsernameButtonProps) {
@@ -13,7 +13,9 @@ function UsernameButton({ name, onClick }: UsernameButtonProps) {
       <Heading
         size="lg"
         isTruncated
-        onClick={onClick}
+        onClick={() => {
+          onClick(name);
+        }}
         textAlign="center"
         _hover={{
           color: "gray",

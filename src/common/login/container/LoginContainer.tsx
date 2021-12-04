@@ -14,7 +14,11 @@ import Context, { ContextType } from "../../../lib/Context";
 
 type LoginRegisterType = "Login" | "Register";
 
-function LoginContainer() {
+interface LoginContainerProps {
+  handleUsernameChange: (username: string) => void;
+}
+
+function LoginContainer({ handleUsernameChange }: LoginContainerProps) {
   const { socket, serverKeys } = useContext(Context) as ContextType;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -51,16 +55,14 @@ function LoginContainer() {
               }}
             />
           </HStack>
-          <Box>
-            <HStack>
-              <Text>Password: </Text>
-              <Input
-                onChange={(event) => {
-                  setPassword(event.target.value);
-                }}
-              />
-            </HStack>
-          </Box>
+          <HStack>
+            <Text>Password: </Text>
+            <Input
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
+            />
+          </HStack>
         </Center>
         <HStack flexGrow={1} w="100%" justifyContent="space-between">
           <Spacer />
@@ -75,6 +77,7 @@ function LoginContainer() {
           <Button
             onClick={() => {
               buttonOnClick("Login");
+              handleUsernameChange(username);
             }}
           >
             Login

@@ -1,9 +1,12 @@
 import NodeRSA from "node-rsa";
 import { createContext, Dispatch, SetStateAction } from "react";
 import { SendMessage, ReadyState } from "react-use-websocket";
+import { ParsedMessage } from "../interfaces/ParsedMessage";
 
 export interface ContextType {
-  users: { list: string[]; set: Dispatch<SetStateAction<string[]>> };
+  currentChat?: string;
+  loggedInAs?: string;
+  chatLogs: Map<string, ParsedMessage[]>;
   isAuthenticated: { value: boolean; set: Dispatch<SetStateAction<boolean>> };
   serverKeys: {
     publicKey: NodeRSA | undefined;

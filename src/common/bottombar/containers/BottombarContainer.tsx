@@ -8,11 +8,14 @@ import Context, { ContextType } from "../../../lib/Context";
 import { useFilePicker } from "use-file-picker";
 
 interface BottombarContainerProps {
-	loggedInAs: string;
-	activeChat: string;
+  loggedInAs: string;
+  activeChat?: string;
 }
 
-function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps ) {
+function BottombarContainer({
+  loggedInAs,
+  activeChat,
+}: BottombarContainerProps) {
   const [message, setMessage] = useState("");
   const [imageIsHover, setImageIsHover] = useState(false);
   const { socket, serverKeys } = useContext(Context) as ContextType;
@@ -32,16 +35,15 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
     // readFilesContent: false, // ignores file content
   });
 
-
-
   const sendMessage = () => {
     if (serverKeys.publicKey === undefined) return;
-    const sendStr = filesContent.length === 0 ? 
-      `[s]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[]:[${Date()}]`:
-      `[si]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[${filesContent[0].name}]:[${Date()}]`;
-    socket.sendMessage(
-      serverKeys.publicKey?.encrypt(sendStr)
-    );
+    const sendStr =
+      filesContent.length === 0
+        ? `[s]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[]:[${Date()}]`
+        : `[si]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[${
+            filesContent[0].name
+          }]:[${Date()}]`;
+    socket.sendMessage(serverKeys.publicKey?.encrypt(sendStr));
     setMessage("");
   };
 
@@ -56,10 +58,13 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
         maxH="20%"
         minH="10%"
       >
-        <BottombarButton icon={<AddIcon />} onClick={() => openFileSelector()} />
-        
+        <BottombarButton
+          icon={<AddIcon />}
+          onClick={() => openFileSelector()}
+        />
+
         {filesContent.map((file, index) => (
-          <Flex 
+          <Flex
             key={index}
             margin="0.75em"
             maxW="50px"
@@ -70,13 +75,26 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
               setImageIsHover(false);
             }}
           >
-            {imageIsHover ? <Icon as={CloseIcon} color="red" position="absolute" />:<></>}
-            <img alt={file.name} src={`data:image/jpeg;base64,`+btoa(file.content)} width="50px" style={imageIsHover? {opacity:0.5 }: {opacity:1 }}/>
+            {imageIsHover ? (
+              <Icon as={CloseIcon} color="red" position="absolute" />
+            ) : (
+              <></>
+            )}
+            <img
+              alt={file.name}
+              src={`data:image/jpeg;base64,` + btoa(file.content)}
+              width="50px"
+              style={imageIsHover ? { opacity: 0.5 } : { opacity: 1 }}
+            />
           </Flex>
         ))}
 
         <Flex marginY="0.75em" borderRadius="1em" grow={1}>
-          <Input padding="0.75em" width="100%" placeholder="Message" value={message}
+          <Input
+            padding="0.75em"
+            width="100%"
+            placeholder="Message"
+            value={message}
             onChange={(event) => setMessage(event.target.value)}
             onKeyUpCapture={(event) => {
               if (event.code === "Enter") {

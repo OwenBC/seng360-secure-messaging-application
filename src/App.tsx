@@ -7,10 +7,16 @@ import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import LoginContainer from "./common/login/container/LoginContainer";
 import Container from "./common/messages/containers/Container";
 import SidebarContainer from "./common/sidebar/containers/SidebarContainer";
+import { ParsedMessage } from "./interfaces/ParsedMessage";
 import Context, { ContextType } from "./lib/Context";
+import { parseHistory } from "./lib/Util";
 
 function App() {
-  const [users, setUsers] = useState<string[]>([]);
+  const [currentChat, setCurrentChat] = useState<string | undefined>(undefined);
+  const [loggedInAs, setLoggedInAs] = useState<string | undefined>(undefined);
+  const [chatLogs, setChatLogs] = useState<Map<string, ParsedMessage[]>>(
+    new Map()
+  );
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [serverPublicKey, setServerPublicKey] = useState<NodeRSA | undefined>(
     undefined
@@ -27,6 +33,14 @@ function App() {
 
   const socketUrl = "ws://localhost:9999";
   const [messageHistory, setMessageHistory] = useState<MessageEvent<any>[]>([]);
+
+  const handleUsernameChange = (username: string) => {
+    setLoggedInAs(username);
+  };
+
+  const handleCurrentChatChange = (username: string) => {
+    setCurrentChat(username);
+  };
 
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
     socketUrl,
@@ -49,7 +63,9 @@ function App() {
   }, [readyState, getWebSocket]);
 
   const store: ContextType = {
-    users: { list: users, set: setUsers },
+    currentChat: currentChat,
+    loggedInAs: loggedInAs,
+    chatLogs: chatLogs,
     isAuthenticated: { value: isAuthenticated, set: setIsAuthenticated },
     serverKeys: {
       publicKey: serverPublicKey,
@@ -118,9 +134,27 @@ function App() {
           "utf8"
         );
         if (message === "[authorized]:[public key]") setIsAuthenticated(true);
-      }
+        else if (message.includes("history")) {
+          const parsedMessage = parseHistory(message);
+          if (parsedMessage === null) return;
 
-      console.log(newMessageHistory);
+          var otherUser = "";
+          if (parsedMessage.from !== loggedInAs) otherUser = parsedMessage.from;
+          else otherUser = parsedMessage.to;
+
+          const newChatLogs: Map<string, ParsedMessage[]> = new Map(chatLogs);
+
+          if (!newChatLogs.has(otherUser)) {
+            newChatLogs.set(otherUser, []);
+          }
+          const newLogMessages = [...(newChatLogs.get(otherUser) ?? [])];
+          newLogMessages.push(parsedMessage);
+
+          newChatLogs.set(otherUser, newLogMessages);
+
+          setChatLogs(newChatLogs);
+        }
+      }
     }
   }, [
     lastMessage,
@@ -131,8 +165,10 @@ function App() {
     sendMessage,
     setServerPublicKey,
     setMessageHistory,
+    chatLogs,
+    loggedInAs,
   ]);
-  
+
   const { setColorMode } = useColorMode();
   setColorMode("light");
 
@@ -148,12 +184,14 @@ function App() {
     if (isAuthenticated) {
       displayedContent = (
         <>
-          <SidebarContainer />
+          <SidebarContainer handleCurrentChatChange={handleCurrentChatChange} />
           <Container />
         </>
       );
     } else {
-      displayedContent = <LoginContainer />;
+      displayedContent = (
+        <LoginContainer handleUsernameChange={handleUsernameChange} />
+      );
     }
   }
 

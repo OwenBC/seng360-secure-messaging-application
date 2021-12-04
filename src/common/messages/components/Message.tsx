@@ -1,31 +1,18 @@
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import { Heading } from "@chakra-ui/react";
+import { ParsedMessage } from "../../../interfaces/ParsedMessage";
 import MessageContextButton from "./MessageContextButton";
 
 interface MessageProps {
-  message: string;
+  message: ParsedMessage;
   activeChat: string;
   image: File | null;
 }
 
 function Message({ message, activeChat, image }: MessageProps) {
-  const regex =
-    /^\[(.*)\]:\[([A-Za-z0-9]*)_([A-Za-z0-9]*)\]:\[(.*)\]:\[(.*)\]:\[(.*)\]/;
-  const found = message.match(regex);
-  if (
-    !found ||
-    found[1] !== "history" ||
-    (found[2] !== activeChat && found[3] !== activeChat)
-  )
-    return <></>;
-  const from = found[2];
-  const id = found[4];
-  const text = found[5];
-  const time = found[6];
-
   return (
     <Flex
-      flexDirection={from === activeChat ? "row" : "row-reverse"}
+      flexDirection={message.from === activeChat ? "row" : "row-reverse"}
       padding="1em"
     >
       <Box
@@ -37,10 +24,14 @@ function Message({ message, activeChat, image }: MessageProps) {
         borderRadius="15px"
         overflow="hidden"
       >
-        <Heading size="xsm">{from + " - " + time}</Heading>
-        <Text>{text}</Text>
+        <Heading size="xsm">{message.from + " - " + message.time}</Heading>
+        <Text>{message.text}</Text>
       </Box>
-      {from === activeChat ? <></> : <MessageContextButton id={id} />}
+      {message.from === activeChat ? (
+        <></>
+      ) : (
+        <MessageContextButton id={message.id} />
+      )}
     </Flex>
   );
 }
