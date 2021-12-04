@@ -18,7 +18,7 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
   const { socket, serverKeys } = useContext(Context) as ContextType;
   const [openFileSelector, { filesContent, clear }] = useFilePicker({
     multiple: false,
-    readAs: "DataURL", 
+    readAs: "BinaryString", //DataURL: 1.5MB, Text: 2.0MB, BinaryString: 1.7MB, ArrayBuffer: returns an ArrayBuffer
     accept: "image/*",
     limitFilesConfig: { max: 1 },
     // minFileSize: 1, // in megabytes
@@ -34,12 +34,13 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
 
 
 
-  const sendMessage = (message: any) => {
+  const sendMessage = () => {
     if (serverKeys.publicKey === undefined) return;
+    const sendStr = filesContent.length === 0 ? 
+      `[s]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[]:[${Date()}]`:
+      `[si]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[${filesContent[0].name}]:[${Date()}]`;
     socket.sendMessage(
-      serverKeys.publicKey?.encrypt(
-        `[s]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[${Date()}]`// Figure out what to put here
-      )
+      serverKeys.publicKey?.encrypt(sendStr)
     );
     setMessage("");
   };
@@ -59,6 +60,7 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
         
         {filesContent.map((file, index) => (
           <Flex 
+            key={index}
             margin="0.75em"
             maxW="50px"
             onMouseEnter={() => setImageIsHover(true)}
@@ -69,7 +71,7 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
             }}
           >
             {imageIsHover ? <Icon as={CloseIcon} color="red" position="absolute" />:<></>}
-            <img alt={file.name} src={file.content} width="50px" style={imageIsHover? {opacity:0.5 }: {opacity:1 }}/>
+            <img alt={file.name} src={`data:image/jpeg;base64,`+btoa(file.content)} width="50px" style={imageIsHover? {opacity:0.5 }: {opacity:1 }}/>
           </Flex>
         ))}
 
@@ -78,12 +80,12 @@ function BottombarContainer( {loggedInAs, activeChat} : BottombarContainerProps 
             onChange={(event) => setMessage(event.target.value)}
             onKeyUpCapture={(event) => {
               if (event.code === "Enter") {
-                sendMessage(message);
+                sendMessage();
               }
             }}
           />
         </Flex>
-        <BottombarButton icon={<ChatIcon />} onClick={() => sendMessage(message)} />
+        <BottombarButton icon={<ChatIcon />} onClick={() => sendMessage()} />
       </Flex>
     </>
   );
