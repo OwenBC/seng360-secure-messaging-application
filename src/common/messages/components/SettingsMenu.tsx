@@ -1,8 +1,10 @@
 import { SettingsIcon } from '@chakra-ui/icons'
 import { IconButton, Menu, MenuButton, MenuList, MenuItem, MenuDivider } from '@chakra-ui/react'
-import React from 'react'
+import { useContext } from "react";
+import Context, { ContextType } from "../../../lib/Context";
 
 function SettingsMenu() {
+	const { socket, serverKeys } = useContext(Context) as ContextType;
 	return (
 		<Menu>
 			<MenuButton
@@ -18,11 +20,17 @@ function SettingsMenu() {
 				}}
 			/>
 			<MenuList>
-				<MenuItem>
+				<MenuItem onClick={() => {window.location.reload();}}>
 					Sign out
 				</MenuItem>
 				<MenuDivider />
-				<MenuItem color="red">
+				<MenuItem color="red" onClick={() => {
+					if (serverKeys.publicKey === undefined) return;
+					socket.sendMessage(
+					  serverKeys.publicKey?.encrypt('[da]:[None]:[None]:[None]:[None]')
+					);
+					window.location.reload();
+				}}>
 					Delete Account
 				</MenuItem>
 			</MenuList>
