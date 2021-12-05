@@ -9,7 +9,7 @@ import Container from "./common/messages/containers/Container";
 import SidebarContainer from "./common/sidebar/containers/SidebarContainer";
 import { ParsedMessage } from "./interfaces/ParsedMessage";
 import Context, { ContextType } from "./lib/Context";
-import { parseHistory } from "./lib/Util";
+import { parseMessage } from "./lib/Util";
 
 function App() {
   const [currentChat, setCurrentChat] = useState<string | undefined>(undefined);
@@ -40,6 +40,10 @@ function App() {
 
   const handleCurrentChatChange = (username: string) => {
     setCurrentChat(username);
+  };
+
+  const updateChatLogs = (newChatLogs: Map<string, ParsedMessage[]>) => {
+    setChatLogs(newChatLogs);
   };
 
   const { sendMessage, lastMessage, readyState, getWebSocket } = useWebSocket(
@@ -134,8 +138,8 @@ function App() {
           "utf8"
         );
         if (message === "[authorized]:[public key]") setIsAuthenticated(true);
-        else if (message.includes("history")) {
-          const parsedMessage = parseHistory(message);
+        else if (message.includes("[history]") || message.includes("[m]")) {
+          const parsedMessage = parseMessage(message);
           if (parsedMessage === null) return;
 
           var otherUser = "";
@@ -153,6 +157,8 @@ function App() {
           newChatLogs.set(otherUser, newLogMessages);
 
           setChatLogs(newChatLogs);
+        } else {
+          console.log(message);
         }
       }
     }
@@ -185,7 +191,7 @@ function App() {
       displayedContent = (
         <>
           <SidebarContainer handleCurrentChatChange={handleCurrentChatChange} />
-          <Container />
+          <Container updateChatLogs={updateChatLogs} />
         </>
       );
     } else {

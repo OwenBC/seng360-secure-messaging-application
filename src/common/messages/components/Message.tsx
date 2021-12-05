@@ -7,9 +7,15 @@ interface MessageProps {
   message: ParsedMessage;
   activeChat: string;
   image: File | null;
+  handleDeleteMessage: (id: string) => void;
 }
 
-function Message({ message, activeChat, image }: MessageProps) {
+function Message({
+  message,
+  activeChat,
+  image,
+  handleDeleteMessage,
+}: MessageProps) {
   return (
     <Flex
       flexDirection={message.from === activeChat ? "row" : "row-reverse"}
@@ -30,7 +36,10 @@ function Message({ message, activeChat, image }: MessageProps) {
       {message.from === activeChat ? (
         <></>
       ) : (
-        <MessageContextButton id={message.id} />
+        <MessageContextButton
+          handleDeleteMessage={handleDeleteMessage}
+          id={message.id}
+        />
       )}
     </Flex>
   );
