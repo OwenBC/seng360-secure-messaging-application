@@ -35,15 +35,23 @@ function BottombarContainer({
     // readFilesContent: false, // ignores file content
   });
 
+  
+  const getID = () => {
+    return Math.floor(Math.random() * 1000) + 1;
+  }
+
   const sendMessage = () => {
     if (serverKeys.publicKey === undefined) return;
-    const sendStr =
-      filesContent.length === 0
-        ? `[s]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[]:[${Date()}]`
-        : `[si]:[${loggedInAs}_${activeChat}]:[message_id]:[${message}]:[${
-            filesContent[0].name
-          }]:[${Date()}]`;
-    socket.sendMessage(serverKeys.publicKey?.encrypt(sendStr));
+    socket.sendMessage(
+      serverKeys.publicKey?.encrypt(
+        `[s]:[${loggedInAs}_${activeChat}]:[${getID()}]:[${message}]:[${Date()}]`
+      )
+    );
+    if (filesContent.length !== 0)socket.sendMessage(
+      serverKeys.publicKey?.encrypt(
+        `[i]:[${loggedInAs}_${activeChat}]:[${getID()}]:[${filesContent[0].name}]:[${Date()}]`
+      )
+    );
     setMessage("");
   };
 
