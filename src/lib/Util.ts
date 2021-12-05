@@ -1,11 +1,11 @@
 import { ParsedMessage } from "../interfaces/ParsedMessage";
 
-const historyRegex =
+const messageRegex =
   /^\[(.*)\]:\[([A-Za-z0-9]*)_([A-Za-z0-9]*)\]:\[(.*)\]:\[(.*)\]:\[(.*)\]/;
 
-export function parseHistory(message: string): ParsedMessage | null {
-  const found = message.match(historyRegex);
-  if (!found || found[1] !== "history") return null;
+export function parseMessage(message: string): ParsedMessage | null {
+  const found = message.match(messageRegex);
+  if (!found) return null;
 
   return {
     time: found[6],
