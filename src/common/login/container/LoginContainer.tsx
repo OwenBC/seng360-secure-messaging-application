@@ -69,6 +69,7 @@ function LoginContainer({ handleUsernameChange }: LoginContainerProps) {
           <Button
             onClick={() => {
               buttonOnClick("Register");
+              handleUsernameChange(username);
             }}
           >
             Register
