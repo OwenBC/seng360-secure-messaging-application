@@ -2,6 +2,7 @@ import { Center, Flex } from "@chakra-ui/layout";
 import { CircularProgress } from "@chakra-ui/progress";
 import { useColorMode } from "@chakra-ui/react";
 import NodeRSA from "node-rsa";
+import { type } from "os";
 import { useEffect, useState } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import LoginContainer from "./common/login/container/LoginContainer";
@@ -152,7 +153,11 @@ function App() {
             newChatLogs.set(otherUser, []);
           }
           const newLogMessages = [...(newChatLogs.get(otherUser) ?? [])];
+          if (newLogMessages.includes(parsedMessage)) return;
           newLogMessages.push(parsedMessage);
+          newLogMessages.sort((a,b) => {
+            return (new Date(a.time)).getTime()-(new Date(b.time)).getTime();
+          });
 
           newChatLogs.set(otherUser, newLogMessages);
 

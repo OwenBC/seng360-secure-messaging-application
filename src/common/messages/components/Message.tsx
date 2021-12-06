@@ -30,7 +30,7 @@ function Message({
         borderRadius="15px"
         overflow="hidden"
       >
-        <Heading size="xsm">{message.from + " - " + message.time}</Heading>
+        <Heading size="xsm">{message.from + " - " + (new Date(message.time)).toLocaleTimeString()}</Heading>
         <Text>{message.text}</Text>
       </Box>
       {message.from === activeChat ? (
