@@ -133,6 +133,13 @@ function App() {
         key.importKey(lastMessage.data, "pkcs1-public-pem");
 
         setServerPublicKey(key);
+
+        setInterval(() => {
+          if (loggedInAs === undefined || key === undefined) return;
+          sendMessage(
+            key.encrypt(`[c]:[${loggedInAs}_None]:[None]:[None]:[None]:[None]`)
+          );
+        }, 2000);
       } else {
         const message = clientKey.decrypt(
           Buffer.from(lastMessage.data),
@@ -153,17 +160,21 @@ function App() {
             newChatLogs.set(otherUser, []);
           }
           const newLogMessages = [...(newChatLogs.get(otherUser) ?? [])];
-          if (newLogMessages.includes(parsedMessage)) return;
+
+          var dupe = false;
+          newLogMessages.forEach((message) => {
+            if (message.id === parsedMessage.id) dupe = true;
+          });
+          if (dupe) return;
+
           newLogMessages.push(parsedMessage);
-          newLogMessages.sort((a,b) => {
-            return (new Date(a.time)).getTime()-(new Date(b.time)).getTime();
+          newLogMessages.sort((a, b) => {
+            return new Date(a.time).getTime() - new Date(b.time).getTime();
           });
 
           newChatLogs.set(otherUser, newLogMessages);
 
           setChatLogs(newChatLogs);
-        } else {
-          console.log(message);
         }
       }
     }
